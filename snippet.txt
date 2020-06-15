@@ -1,0 +1,9 @@
+nodemcu-tool --port=COM3 upload init.lua
+nodemcu-tool --port=COM3 upload script.lua
+nodemcu-tool --port=COM3 upload wifi.lua
+nodemcu-tool --port=COM3 run init.lua
+nodemcu-tool --port=COM3 remove wifi.lua
+nodemcu-tool --port=COM3 terminal
+
+esptool.py erase_flash 
+esptool.py --port COM3 write_flash --flash_mode dio 0x00 nodemcu-master-14-modules-2020-06-14-06-49-50-float.bin
