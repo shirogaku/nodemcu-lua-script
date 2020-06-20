@@ -9,13 +9,6 @@ I2C_SDA = 6 --IO12
 I2C_SCL = 5 --IO14
 BME_280_READ_MS = 5000 --5s
 
--- UART On DATA callback
-function on_uart_data(data)
-	UART_BUFF = data
-	print(data)
-	uart.on("data")
-end
-
 -- Timer for BME280 read callback
 function on_timer_bme280_read()
 	T, P, H = bme280.read()
@@ -25,10 +18,6 @@ function on_timer_bme280_read()
 	print(string.format("H=%d.%03d%%", H/1000, H%1000))
 	print("----------")
 end
-
--- UART callback register
-uart.on("data", 1, on_uart_data, 0)
-print("UART on DATA registered")
 
 -- I2C init
 i2c.setup(0, I2C_SDA, I2C_SCL, i2c.SLOW)
