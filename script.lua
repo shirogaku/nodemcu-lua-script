@@ -1,5 +1,7 @@
 --[[
 	This will be called by init.lua
+	OR
+	will be called by wifi.lua if WiFi is enabled
 ]]
 
 -- Constant

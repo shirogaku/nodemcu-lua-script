@@ -2,15 +2,12 @@
 	This will call script.lua
 ]]
 
+-- Flag
+IS_WIFI_REQUIRED = true
+
 -- Constant
 STARTUP_MS = 5000
-
--- DO NOT make IS_WIFI_REQUIRED true OR RE-FLASH NODEMCU RUNTIME!!!
-IS_WIFI_REQUIRED = false
 WIFI_MS = 5000
-
--- Flag
-IS_WIFI_SCRIPT_DONE = false
 
 --STARTUP CALLBACK
 function on_timer_startup()
@@ -33,26 +30,17 @@ function on_timer_wifi()
 	else
 		print("wifi.lua not found")
 	end
-	
-	IS_WIFI_SCRIPT_DONE = true
 end
 
---WIFI TIMER SETUP
+--STARTUP/WIFI TIMER SETUP
+startup = tmr.create()
+
 if IS_WIFI_REQUIRED == true then
-	--WIFI TIMER SETUP
-	startup = tmr.create()
 	startup:register(WIFI_MS, tmr.ALARM_SINGLE, on_timer_wifi)
 	startup:start()
 	print("setup wifi in 5s")
-	
-	--Wait until wifi done
-	--while IS_WIFI_REQUIRED and IS_WIFI_SCRIPT_DONE == false do end
-	-- TODO: This "while" is blocking the flashing process. Must be done with something
-	while IS_WIFI_SCRIPT_DONE == false do end
+else
+	startup:register(STARTUP_MS, tmr.ALARM_SINGLE, on_timer_startup)
+	startup:start()
+	print("startup in 5s")
 end
-
---STARTUP TIMER SETUP
-startup = tmr.create()
-startup:register(STARTUP_MS, tmr.ALARM_SINGLE, on_timer_startup)
-startup:start()
-print("startup in 5s")
