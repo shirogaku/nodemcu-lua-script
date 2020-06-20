@@ -5,12 +5,12 @@
 ]]
 
 -- Constant
-I2C_SDA = 6 --IO12
-I2C_SCL = 5 --IO14
-BME_280_READ_MS = 5000 --5s
+intI2cSda = 6 --IO12
+intI2cScl = 5 --IO14
+intBme280ReadMs = 5000 --5s
 
 -- Timer for BME280 read callback
-function on_timer_bme280_read()
+function onTimerBme280Read()
 	T, P, H = bme280.read()
 	local Tsgn = (T < 0 and -1 or 1); T = Tsgn*T
 	print(string.format("T=%s%d.%02d", Tsgn<0 and "-" or "", T/100, T%100))
@@ -20,15 +20,15 @@ function on_timer_bme280_read()
 end
 
 -- I2C init
-i2c.setup(0, I2C_SDA, I2C_SCL, i2c.SLOW)
-bme280_init = bme280.setup()
+i2c.setup(0, intI2cSda, intI2cScl, i2c.SLOW)
+objBme280Init = bme280.setup()
 print("BME280 setup done")
 
 -- Create timer for BME280 if init OK
-if bme280_init ~= nil then
-	bme280_read_timer = tmr.create()
-	bme280_read_timer:register(BME_280_READ_MS, tmr.ALARM_AUTO, on_timer_bme280_read)
-	bme280_read_timer:start()
+if objBme280Init ~= nil then
+	tmrBme280Read = tmr.create()
+	tmrBme280Read:register(intBme280ReadMs, tmr.ALARM_AUTO, onTimerBme280Read)
+	tmrBme280Read:start()
 else
 	print("BME280 init failed")
 end

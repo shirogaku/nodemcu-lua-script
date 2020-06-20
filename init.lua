@@ -3,44 +3,46 @@
 ]]
 
 -- Flag
-IS_WIFI_REQUIRED = true
+boolIsWifiRequired = false
 
 -- Constant
-STARTUP_MS = 5000
-WIFI_MS = 5000
+strScriptFileName = "script.lua"
+strWifiFileName = "wifi.lua"
+intStartupMs = 5000
+intWifiMs = 5000
 
 --STARTUP CALLBACK
-function on_timer_startup()
+function onTimerStartup()
 	print("trying to open script.lua")
 	
-	if file.open("script.lua") ~= nil then
+	if file.open(strScriptFileName) ~= nil then
 		collectgarbage()
-		dofile("script.lua")
+		dofile(strScriptFileName)
 	else
 		print("script.lua not found")
 	end
 end
 
 --WIFI CALLBACK
-function on_timer_wifi()
-	print("trying to open wifi.lua")
+function onTimerWifi()
+	print("trying to open "..strWifiFileName)
 	
-	if file.open("wifi.lua") ~= nil then
-		dofile("wifi.lua")
+	if file.open(strWifiFileName) ~= nil then
+		dofile(strWifiFileName)
 	else
-		print("wifi.lua not found")
+		print(strWifiFileName.." not found")
 	end
 end
 
 --STARTUP/WIFI TIMER SETUP
-startup = tmr.create()
+tmrStartup = tmr.create()
 
-if IS_WIFI_REQUIRED == true then
-	startup:register(WIFI_MS, tmr.ALARM_SINGLE, on_timer_wifi)
-	startup:start()
+if boolIsWifiRequired == true then
+	tmrStartup:register(intWifiMs, tmr.ALARM_SINGLE, onTimerWifi)
+	tmrStartup:start()
 	print("setup wifi in 5s")
 else
-	startup:register(STARTUP_MS, tmr.ALARM_SINGLE, on_timer_startup)
-	startup:start()
+	tmrStartup:register(intStartupMs, tmr.ALARM_SINGLE, onTimerStartup)
+	tmrStartup:start()
 	print("startup in 5s")
 end

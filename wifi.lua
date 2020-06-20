@@ -3,32 +3,35 @@
 ]]
 
 -- Constant
-WIFI_CFG = {}
-WIFI_CFG.ssid = ""
-WIFI_CFG.pwd = ""
-WIFI_CFG.save = false
+strScriptFileName = "script.lua"
+strWifiFileName = "wifi.lua"
+
+tblWifiCfg = {}
+tblWifiCfg.ssid = ""
+tblWifiCfg.pwd = ""
+tblWifiCfg.save = false
 
 -- Jump to script
-function do_script()
-	print("trying to open script.lua")
+function doScript()
+	print("trying to open "..strScriptFileName)
 	
-	if file.open("script.lua") ~= nil then
+	if file.open(strScriptFileName) ~= nil then
 		collectgarbage()
-		dofile("script.lua")
+		dofile(strScriptFileName)
 	else
-		print("script.lua not found")
+		print(strScriptFileName.." not found")
 	end
 end
 
 -- WIFI event monitor when connected
-function on_wifi_connected(T)
+function onWifiConnected(T)
 	print("WIFI connected to "..T.SSID.." on channel "..T.channel)
 end
 
 -- WIFI event monitor when DHCP done
-function on_ip_dhcp_done(T)
+function onIpDhcpDone(T)
 	print("IP address is "..T.IP)
-	do_script()
+	doScript()
 end
 
 -- Set as STATION
@@ -36,12 +39,12 @@ wifi.setmode(wifi.STATION)
 
 -- WIFI event monitor
 -- On wifi connected
-wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, on_wifi_connected)
+wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, onWifiConnected)
 -- On wifi dhcp received
-wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, on_ip_dhcp_done)
+wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, onIpDhcpDone)
 
 -- WIFI set config
-wifi.sta.config(WIFI_CFG)
+wifi.sta.config(tblWifiCfg)
 
 -- WIFI connect
 wifi.sta.connect()
