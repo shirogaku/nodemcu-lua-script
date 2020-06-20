@@ -7,19 +7,14 @@ WIFI_CFG = {}
 WIFI_CFG.ssid = ""
 WIFI_CFG.pwd = ""
 WIFI_CFG.save = false
-WIFI_IS_AUTOCONNECT = 1
-
--- Flag
-IS_CONNECTION_OK = false
 
 -- WIFI event monitor when connected
 function on_wifi_connected(T)
 	print("WIFI connected to "..T.SSID.." on channel "..T.channel)
-	IS_CONNECTION_OK = true
 end
 
--- WIFI do autoconnect
-wifi.sta.autoconnect(WIFI_IS_AUTOCONNECT)
+-- Set as STATION
+wifi.setmode(wifi.STATION)
 
 -- WIFI set config
 wifi.sta.config(WIFI_CFG)
@@ -27,6 +22,3 @@ wifi.sta.config(WIFI_CFG)
 -- WIFI connect
 wifi.sta.connect(on_wifi_connected)
 print("WIFI CONNECTING")
-
--- Wait until get ip
-while IS_CONNECTION_OK == false do end
